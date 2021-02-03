@@ -1,0 +1,23 @@
+{
+	"name": "com.slantar.architecture",
+	"displayName": "Slantar Architecture",
+	"type": "library",
+	"version": "0.1.0",
+	"unity": "2018.1",
+	"license": "MIT",
+	"description": "Architecture classes for Unity",
+	"keywords": [
+		"Slantar",
+		"ioc",
+		"utility",
+		"Service locator",
+		"ioc container",
+		"utility-library"
+	],
+	"category": "",
+	"author": {
+		"name": "slantar",
+		"url": "https://twitter.com/slantar"
+	},
+	"samples": []
+}

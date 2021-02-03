@@ -1,0 +1,16 @@
+{
+    "name": "Slantar.Architecture",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3ca33fff65e69fa41bb5812fb884e84f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Slantar.Architecture.Editor",
+    "references": [
+        "GUID:a84eb345321c5f046aad6e24eb6ffee3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
