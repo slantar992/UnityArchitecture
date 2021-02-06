@@ -18,13 +18,5 @@
 	"author": {
 		"name": "slantar",
 		"url": "https://twitter.com/slantar"
-	},
-	"samples": [
-		{
-		  "displayName": "Bootstrapper template",
-		  "description": "Bootstrapper class for bootstrapp service locator",
-		  "path": "Samples/BootstrapperTemplate"
-		}
-	  ]
-	 
+	}
 }
