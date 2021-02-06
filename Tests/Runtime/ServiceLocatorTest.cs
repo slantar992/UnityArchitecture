@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Slantar.Architecture.Tests
 {
-	public class ContainerTest
+	public class ServiceLocatorTest
 	{
 		public static string ID1 = "Class1";
 		public static string ID2 = "Class2";
@@ -12,13 +12,13 @@ namespace Slantar.Architecture.Tests
 		public class Implementation : Interface { }
 		public class Class { }
 
-		private Container container;
+		private ServiceLocator container;
 
 
 		[SetUp]
 		public void SetUp()
 		{
-			container = new Container();
+			container = new ServiceLocator();
 		}
 
 		[Test]

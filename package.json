@@ -1,8 +1,8 @@
 {
 	"name": "com.slantar.architecture",
-	"displayName": "Slantar Architecture",
+	"displayName": "Architecture",
 	"type": "library",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"unity": "2018.1",
 	"license": "MIT",
 	"description": "Architecture classes for Unity",
@@ -19,5 +19,12 @@
 		"name": "slantar",
 		"url": "https://twitter.com/slantar"
 	},
-	"samples": []
+	"samples": [
+		{
+		  "displayName": "Bootstrapper template",
+		  "description": "Bootstrapper class for bootstrapp service locator",
+		  "path": "Samples/BootstrapperTemplate"
+		}
+	  ]
+	 
 }

@@ -7,7 +7,7 @@ namespace Slantar.Architecture
 {
 	public delegate void OnContainerChangeEvent(OnContainerChangeData data);
 
-	public class Container
+	public class ServiceLocator
 	{
 		public const string DEFAULT_ID = "__base__";
 
@@ -23,7 +23,7 @@ namespace Slantar.Architecture
 		{
 			Type type = typeof(T);
 			bool exist = Exist(type, ID);
-
+			
 			Add(type, ID, () => factory());
 			TriggerChangeEvent(type, ID, exist ? ContainerChangeType.Replaced : ContainerChangeType.Removed);
 		}
