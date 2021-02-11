@@ -1,5 +1,0 @@
-
-namespace Slantar.Architecture.Tests
-{
-	
-}

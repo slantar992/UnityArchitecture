@@ -1,26 +1,22 @@
 
+using System;
+using System.Collections.Generic;
 using UnityDebug = UnityEngine.Debug;
-
 namespace Slantar.Architecture
 {
 	public class UnityLog : AbstractLog
 	{
-		protected override void PrintNative(LogLevel level, string message)
+		private readonly Dictionary<LogLevel, Action<string>> unityLogs = new Dictionary<LogLevel, Action<string>>()
 		{
-			switch (level)
-			{
-				case LogLevel.Debug:
-				case LogLevel.Info:
-				case LogLevel.Notice:
-					UnityDebug.Log(message);
-					break;
-				case LogLevel.Warning:
-					UnityDebug.LogWarning(message);
-					break;
-				case LogLevel.Error:
-					UnityDebug.LogError(message);
-					break;
-			}
-		}
+			{LogLevel.Debug, UnityDebug.Log},
+			{LogLevel.Info, UnityDebug.Log},
+			{LogLevel.Notice, UnityDebug.Log},
+			{LogLevel.Warning, UnityDebug.LogWarning},
+			{LogLevel.Error, UnityDebug.LogError}
+		};
+
+		public override void Save() => _ = 0;
+
+		protected override void PrintNative(LogLevel level, string message) => unityLogs[level](message);
 	}
 }

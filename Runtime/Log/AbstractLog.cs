@@ -15,7 +15,7 @@ namespace Slantar.Architecture
 
 		public LogLevel MinLogLevel { get; set; }
 
-		public AbstractLog(){}
+		public AbstractLog() { }
 		public AbstractLog(LogLevel minLogLevel) => MinLogLevel = minLogLevel;
 
 		public virtual void Debug(string message) => PrintLog(LogLevel.Debug, message, OnDebug);
@@ -26,7 +26,7 @@ namespace Slantar.Architecture
 
 		private void PrintLog(LogLevel level, string message, Action<string> logEvent)
 		{
-			if(level >= MinLogLevel)
+			if (level >= MinLogLevel)
 			{
 				var formartedMessage = $"{level.ToString().ToUpper()}: {message}";
 				PrintNative(level, formartedMessage);
@@ -34,6 +34,7 @@ namespace Slantar.Architecture
 			}
 		}
 
+		public abstract void Save();
 		protected abstract void PrintNative(LogLevel level, string message);
 	}
 }

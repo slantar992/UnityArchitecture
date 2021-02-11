@@ -52,6 +52,5 @@ namespace Slantar.Architecture
 		}
 
 		public void Clear() => subscribers.Clear();
-
 	}
 }
