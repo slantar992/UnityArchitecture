@@ -15,7 +15,7 @@ namespace Slantar.Architecture
 			{LogLevel.Error, UnityDebug.LogError}
 		};
 
-		public override void Save() => _ = 0;
+		public UnityLog(LogLevel minLogLevel = LogLevel.Debug) : base(minLogLevel) { }
 
 		protected override void PrintNative(LogLevel level, string message) => unityLogs[level](message);
 	}

@@ -8,8 +8,6 @@ namespace Slantar.Architecture.Tests.Log
 	{
 		protected override ILog NewInstance => new UnityLog();
 
-		public override bool CheckRecorded() => true;
-
 		[Test]
 		public override void TestOnErrorEvent()
 		{

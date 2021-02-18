@@ -68,13 +68,6 @@ namespace Slantar.Architecture.Tests.Log
 			 log.OnError -= onTriggered;
 		 });
 
-		[Test]
-		public virtual void TestSave()
-		{
-			log.Save();
-			Assert.True(CheckRecorded(), "Log saved correctly!");
-		}
-
 		private void TestLog(Action<string> logMethod)
 		{
 			logMethod(DEFAULT_MESSAGE);
@@ -104,7 +97,5 @@ namespace Slantar.Architecture.Tests.Log
 
 			Assert.True(triggered, "Event triggered Correctly");
 		}
-
-		public abstract bool CheckRecorded();
 	}
 }

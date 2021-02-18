@@ -8,6 +8,5 @@ namespace Slantar.Architecture.Tests.Log
 	{
 		protected override ILog NewInstance => new SystemConsoleLog();
 
-		public override bool CheckRecorded() => true;
 	}
 }

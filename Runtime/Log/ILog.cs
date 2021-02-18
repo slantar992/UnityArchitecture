@@ -18,6 +18,5 @@ namespace Slantar.Architecture
 		void Notice(string message);
 		void Warning(string message);
 		void Error(string message);
-		void Save();
 	}
 }

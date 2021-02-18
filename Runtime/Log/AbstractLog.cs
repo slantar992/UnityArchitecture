@@ -1,6 +1,7 @@
 
 
 using System;
+using System.Collections;
 
 namespace Slantar.Architecture
 {
@@ -34,7 +35,6 @@ namespace Slantar.Architecture
 			}
 		}
 
-		public abstract void Save();
 		protected abstract void PrintNative(LogLevel level, string message);
 	}
 }

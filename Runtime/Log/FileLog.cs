@@ -6,21 +6,31 @@ namespace Slantar.Architecture
 {
 	public class FileLog : AbstractLog
 	{
-		//private readonly File file;
+		private string path;
 
-		public FileLog(string filePath, LogLevel minLogLevel) : base(minLogLevel)
+		public FileLog(string path, LogLevel minLogLevel = LogLevel.Debug) : base(minLogLevel)
 		{
+			CreateFileIfNotExist(path);
 
+			this.path = path;
 		}
 
-		public override void Save()
+		private static void CreateFileIfNotExist(string path)
 		{
-
+			if (!File.Exists(path))
+			{
+				var directory = Path.GetDirectoryName(path);
+				if (!Directory.Exists(directory))
+				{
+					Directory.CreateDirectory(directory);
+				}
+				using var file = File.Create(path);
+			}
 		}
 
 		protected override void PrintNative(LogLevel level, string message)
 		{
-
+			File.AppendAllText(path, message + "\n");
 		}
 	}
 }
