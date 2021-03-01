@@ -6,9 +6,9 @@ namespace Slantar.Architecture.Tests.Log
 {
 	public abstract class ILogTest
 	{
-		private const string DEFAULT_MESSAGE = "Hello!";
+		protected const string DEFAULT_MESSAGE = "Hello!";
 
-		private ILog log;
+		protected ILog log;
 
 		protected abstract ILog NewInstance { get; }
 
