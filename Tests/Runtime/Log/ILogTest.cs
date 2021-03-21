@@ -1,80 +1,103 @@
 
 using System;
 using NUnit.Framework;
+using UnityEngine.TestTools;
 
 namespace Slantar.Architecture.Tests.Log
 {
-	public abstract class ILogTest
+	public class LogTest
 	{
-		protected const string DEFAULT_MESSAGE = "Hello!";
+		private const string DEFAULT_MESSAGE = "Hello!";
+		private const string FILE_PATH = "./File.txt";
 
-		protected ILog log;
-
-		protected abstract ILog NewInstance { get; }
-
-		[SetUp]
-		public virtual void SetUp() => log = NewInstance;
-		[Test]
-		public virtual void TestDebug() => TestLog(log.Debug);
-		[Test]
-		public virtual void TestInfo() => TestLog(log.Info);
-		[Test]
-		public virtual void TestNotice() => TestLog(log.Notice);
-		[Test]
-		public virtual void TestWarning() => TestLog(log.Warning);
-		[Test]
-		public virtual void TestError() => TestLog(log.Error);
-		[Test]
-		public virtual void TestMinLogLevelShowing() => Assert.True(TestMinLogLevel(true), "Message triggered correctly");
-		[Test]
-		public virtual void TestMinLogLevelNotShowing() => Assert.False(TestMinLogLevel(false), "Message not triggered correctly");
-		[Test]
-		public virtual void TestOnDebugEvent() => TestEvent((Action<string> onTriggered) =>
-		  {
-			  log.OnDebug += onTriggered;
-			  log.Debug(DEFAULT_MESSAGE);
-			  log.OnDebug -= onTriggered;
-		  });
-
-		[Test]
-		public virtual void TestOnInfoEvent() => TestEvent((Action<string> onTriggered) =>
-		 {
-			 log.OnInfo += onTriggered;
-			 log.Info(DEFAULT_MESSAGE);
-			 log.OnInfo -= onTriggered;
-		 });
-
-		[Test]
-		public virtual void TestOnNoticeEvent() => TestEvent((Action<string> onTriggered) =>
-		 {
-			 log.OnNotice += onTriggered;
-			 log.Notice(DEFAULT_MESSAGE);
-			 log.OnNotice -= onTriggered;
-		 });
-
-		[Test]
-		public virtual void TestOnWarningEvent() => TestEvent((Action<string> onTriggered) =>
+		[DatapointSource] private ILog[] logs =
 		{
-			log.OnWarning += onTriggered;
-			log.Warning(DEFAULT_MESSAGE);
-			log.OnWarning -= onTriggered;
-		});
+			new SystemConsoleLog(),
+			new FileLog(FILE_PATH),
+			new CompositeLog(LogLevel.Debug, new SystemConsoleLog(), new FileLog(FILE_PATH))
+		};
+		
+		[Theory]
+		public virtual void TestDebug(ILog log) => TestLog(log.Debug);
+		[Theory]
+		public virtual void TestInfo(ILog log) => TestLog(log.Info);
+		[Theory]
+		public virtual void TestNotice(ILog log) => TestLog(log.Notice);
+		[Theory]
+		public virtual void TestWarning(ILog log) => TestLog(log.Warning);
+		[Theory]
+		public virtual void TestError(ILog log) => TestLog(log.Error);
+		[Theory]
+		public virtual void TestMinLogLevelShowing(ILog log) => Assert.True(TestMinLogLevel(log, true), "Message triggered correctly");
+		[Theory]
+		public virtual void TestMinLogLevelNotShowing(ILog log) => Assert.False(TestMinLogLevel(log, false), "Message not triggered correctly");
+		[Theory]
+		public virtual void TestOnDebugEvent(ILog log)
+		{
+			log.MinLogLevel = LogLevel.Debug;
+			TestEvent((Action<string> onTriggered) =>
+			{
+				log.OnDebug += onTriggered;
+				log.Debug(DEFAULT_MESSAGE);
+				log.OnDebug -= onTriggered;
+			});
+		}
 
-		[Test]
-		public virtual void TestOnErrorEvent() => TestEvent((Action<string> onTriggered) =>
-		 {
-			 log.OnError += onTriggered;
-			 log.Error(DEFAULT_MESSAGE);
-			 log.OnError -= onTriggered;
-		 });
+		[Theory]
+		public virtual void TestOnInfoEvent(ILog log) 
+		{
+			log.MinLogLevel = LogLevel.Info;
+			TestEvent((Action<string> onTriggered) =>
+			{
+				log.OnInfo += onTriggered;
+				log.Info(DEFAULT_MESSAGE);
+				log.OnInfo -= onTriggered;
+			});
+		}
 
-		private void TestLog(Action<string> logMethod)
+		[Theory]
+		public virtual void TestOnNoticeEvent(ILog log) 
+		{
+			log.MinLogLevel = LogLevel.Notice;
+			TestEvent((Action<string> onTriggered) =>
+			{
+				log.OnNotice += onTriggered;
+				log.Notice(DEFAULT_MESSAGE);
+				log.OnNotice -= onTriggered;
+			});
+		}
+
+		[Theory]
+		public virtual void TestOnWarningEvent(ILog log) 
+		{
+			log.MinLogLevel = LogLevel.Warning;
+			TestEvent((Action<string> onTriggered) =>
+			{
+				log.OnWarning += onTriggered;
+				log.Warning(DEFAULT_MESSAGE);
+				log.OnWarning -= onTriggered;
+			});
+		}
+
+		[Theory]
+		public virtual void TestOnErrorEvent(ILog log)
+		{
+			log.MinLogLevel = LogLevel.Error;
+			TestEvent((Action<string> onTriggered) =>
+			{
+				log.OnError += onTriggered;
+				log.Error(DEFAULT_MESSAGE);
+				log.OnError -= onTriggered;
+			});
+		}
+
+		private static void TestLog(Action<string> logMethod)
 		{
 			logMethod(DEFAULT_MESSAGE);
 			Assert.Pass();
 		}
 
-		private bool TestMinLogLevel(bool show)
+		private static bool TestMinLogLevel(ILog log, bool show)
 		{
 			bool triggered = false;
 			log.MinLogLevel = show ? LogLevel.Info : LogLevel.Error;
@@ -90,7 +113,7 @@ namespace Slantar.Architecture.Tests.Log
 
 		private void TestEvent(Action<Action<string>> subscribingMethod)
 		{
-			bool triggered = false;
+			var triggered = false;
 			void OnTriggered(string message) => triggered = true;
 
 			subscribingMethod(OnTriggered);
