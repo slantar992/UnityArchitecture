@@ -7,6 +7,7 @@ namespace Slantar.Architecture
 {
 	public abstract class AbstractLog : ILog
 	{
+		private ILogFormatter formatter;
 
 		public event Action<string> OnDebug;
 		public event Action<string> OnInfo;
@@ -16,8 +17,12 @@ namespace Slantar.Architecture
 
 		public LogLevel MinLogLevel { get; set; }
 
-		public AbstractLog() { }
-		public AbstractLog(LogLevel minLogLevel) => MinLogLevel = minLogLevel;
+		public AbstractLog(LogLevel minLogLevel = LogLevel.Debug, ILogFormatter formatter = null)
+		{
+			MinLogLevel = minLogLevel;
+			this.formatter = formatter ?? new BasicLogFormatter();
+		}
+
 
 		public virtual void Debug(string message) => PrintLog(LogLevel.Debug, message, OnDebug);
 		public virtual void Info(string message) => PrintLog(LogLevel.Info, message, OnInfo);
@@ -29,7 +34,7 @@ namespace Slantar.Architecture
 		{
 			if (level >= MinLogLevel)
 			{
-				var formartedMessage = $"{level.ToString().ToUpper()}: {message}";
+				var formartedMessage = formatter.Format(level, message);
 				PrintNative(level, formartedMessage);
 				logEvent?.Invoke(formartedMessage);
 			}

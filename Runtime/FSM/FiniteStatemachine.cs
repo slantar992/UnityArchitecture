@@ -1,7 +1,6 @@
-
-
 using System;
 using System.Collections.Generic;
+
 namespace Slantar.Architecture
 {
 	public class FiniteStateMachine : IFiniteStateMachine
@@ -20,7 +19,8 @@ namespace Slantar.Architecture
 			}
 		}
 
-		private readonly Dictionary<Type, List<IFSMTransition>> transitions = new Dictionary<Type, List<IFSMTransition>>();
+		private readonly Dictionary<Type, FSMNode> states = new Dictionary<Type, FSMNode>();
+
 
 		public FiniteStateMachine(IFSMState initialState)
 		{
@@ -28,40 +28,70 @@ namespace Slantar.Architecture
 			SetCurrentState(initialState);
 		}
 
+		public FiniteStateMachine() { }
+
 
 		public FiniteStateMachine AddState(IFSMState state)
 		{
 			var type = state.GetType();
 
-			if (transitions.ContainsKey(type))
+			if (states.ContainsKey(type))
 			{
 				throw new FSMStateAlreadyAddedException();
 			}
-			transitions.Add(type, new List<IFSMTransition>());
+			states.Add(type, new FSMNode()
+			{
+				state = state
+			});
 
 			return this;
 		}
 
-		public IFiniteStateMachine AddTransition<TState>(IFSMTransition transition) where TState : IFSMState
+		public FiniteStateMachine AddTransition<TState>(IFSMTransition transition) where TState : IFSMState
 		{
 			var type = typeof(TState);
 
-			if (!transitions.ContainsKey(type))
+			if (!states.ContainsKey(type))
 			{
 				throw new FSMStateNotFoundException();
 			}
 
-			transitions[type].Add(transition);
+			states[type].transitions.Add(transition);
 
 			return this;
 		}
 
+		public bool ForceState<TState>() where TState : IFSMState
+		{
+			var type = typeof(TState);
+			if (states.TryGetValue(type, out var instance))
+			{
+				Current = instance.state;
+				return true;
+			}
+
+			return false;
+
+		}
+
 		public void Update()
 		{
-			Current.Update();
+			UpdateCurrent();
 			if (HasValidTransition(out IFSMState nextState))
 			{
 				Current = nextState;
+			}
+		}
+
+		private void UpdateCurrent()
+		{
+			try
+			{
+				Current.Update();
+			}
+			catch (NullReferenceException e)
+			{
+				throw new FSMCurrentStateNullException();
 			}
 		}
 
@@ -69,7 +99,7 @@ namespace Slantar.Architecture
 
 		private bool HasValidTransition(out IFSMState nextState)
 		{
-			foreach (var transition in transitions[currentType])
+			foreach (var transition in states[currentType].transitions)
 			{
 				if (transition.Valid)
 				{

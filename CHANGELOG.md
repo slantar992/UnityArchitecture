@@ -1,4 +1,13 @@
-# Version 0.2.0
+# Version 0.3.1
+## Tweaks
+* FSM
+  * Default constructor added
+  * ForceState method added
+  * Chain state and transition additions is possible
+* Log
+  * ILogFormatter interface added
+  * Date formatter added (TimestampLogFormatter)
+# Version 0.3.0
 ## Features
 * Finite state machine implemented
 * Event bus added

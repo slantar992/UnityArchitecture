@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace Slantar.Architecture.Tests
 {
+	[TestFixture]
 	public class EventBusTest 
 	{
 		private IEventBus eventBus;

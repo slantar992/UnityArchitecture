@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Slantar.Architecture.Tests
 {
+	[TestFixture]
 	public class InstancePoolTest
 	{
 		private IPool<Pooled> pool;

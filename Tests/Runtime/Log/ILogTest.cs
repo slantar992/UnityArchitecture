@@ -5,6 +5,7 @@ using UnityEngine.TestTools;
 
 namespace Slantar.Architecture.Tests.Log
 {
+	[TestFixture]
 	public class LogTest
 	{
 		private const string DEFAULT_MESSAGE = "Hello!";

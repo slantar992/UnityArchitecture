@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace Slantar.Architecture.Tests
 {
+	[TestFixture]
 	public class ServiceLocatorTest
 	{
 		public static string ID1 = "Class1";

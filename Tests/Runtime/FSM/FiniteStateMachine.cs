@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace Slantar.Architecture.Tests
 {
+	[TestFixture]
 	public class FiniteStateMachineTest
 	{
 		private Flag flag;
@@ -28,6 +29,23 @@ namespace Slantar.Architecture.Tests
 			fsm.Update();
 			Assert.False(flag.value);
 		}
+		
+		[Test]
+		public void ForceTransitionToB()
+		{
+			var success = fsm.ForceState<StateB>();
+			fsm.Update();
+			Assert.False(flag.value);
+		}
+		
+		[Test]
+		public void IsForcedTransitionSuccessful()
+		{
+			Assert.True(fsm.ForceState<StateB>());
+		}
+		
+		[Test]
+		public void IsForcedTransitionFail() => Assert.False(fsm.ForceState<StateC>());
 
 		private IFiniteStateMachine AssembleFSM()
 		{
