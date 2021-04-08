@@ -1,15 +1,10 @@
 ﻿
 namespace Slantar.Architecture.Tests
 {
-	public class AtoB : IFSMTransition
+	public class AtoB : AbstractFsmTransition
 	{
-		public IFSMState ToState { get; private set; }
+		public override bool Valid => true;
 
-		public bool Valid => true;
-
-		public AtoB(IFSMState toState)
-		{
-			ToState = toState;
-		}
+		public AtoB(IFsmState toState) : base(toState) { }
 	}
 }

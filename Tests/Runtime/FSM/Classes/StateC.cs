@@ -1,7 +1,7 @@
 ﻿
 namespace Slantar.Architecture.Tests
 {
-	public class StateC : IFSMState
+	public class StateC : IFsmState
 	{
 		private Flag boolFlag;
 

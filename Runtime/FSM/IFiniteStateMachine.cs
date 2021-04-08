@@ -3,7 +3,8 @@ namespace Slantar.Architecture
 {
 	public interface IFiniteStateMachine
 	{
-		bool ForceState<TState>() where TState : IFSMState;
+		public bool Started { get; }
+		void Start();
 		void Update();
 	}
 }

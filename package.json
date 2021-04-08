@@ -2,7 +2,7 @@
 	"name": "com.slantar.architecture",
 	"displayName": "Architecture",
 	"type": "library",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"unity": "2018.1",
 	"license": "MIT",
 	"description": "Architecture classes for Unity",

@@ -1,59 +1,66 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Slantar.Architecture
 {
 	public class FiniteStateMachine : IFiniteStateMachine
 	{
-		private IFSMState current;
+		public bool Started { get; private set; }
+
+		private IFsmState current;
 		private Type currentType;
-		private IFSMState Current
+		private IFsmState Current
 		{
 			get => current;
 			set
 			{
-				current?.Exit();
+				current.Exit();
 				current = value;
 				currentType = value.GetType();
 				current.Enter();
 			}
 		}
 
-		private readonly Dictionary<Type, FSMNode> states = new Dictionary<Type, FSMNode>();
+		private readonly Dictionary<Type, FsmNode> states = new Dictionary<Type, FsmNode>();
 
-
-		public FiniteStateMachine(IFSMState initialState)
+		public FiniteStateMachine()
 		{
-			AddState(initialState);
-			SetCurrentState(initialState);
+			current = new EmptyFsmState();
 		}
 
-		public FiniteStateMachine() { }
 
-
-		public FiniteStateMachine AddState(IFSMState state)
+		public FiniteStateMachine AddState(IFsmState state, bool setInitial = false)
 		{
 			var type = state.GetType();
 
 			if (states.ContainsKey(type))
-			{
-				throw new FSMStateAlreadyAddedException();
-			}
-			states.Add(type, new FSMNode()
-			{
-				state = state
-			});
+				throw new FsmStateAlreadyAddedException();
 
+			if (setInitial && FindNode(out var initialNode))
+			{
+				initialNode.initial = false;
+			}
+
+			if (!Started && current.GetType() != typeof(FsmNotStartedState))
+				current = new FsmNotStartedState();
+			
+			states.Add(type, new FsmNode()
+			{
+				state = state,
+				initial = setInitial
+			});
+			
 			return this;
 		}
 
-		public FiniteStateMachine AddTransition<TState>(IFSMTransition transition) where TState : IFSMState
+		public FiniteStateMachine AddTransition<TState>(IFsmTransition transition) where TState : IFsmState
 		{
 			var type = typeof(TState);
 
 			if (!states.ContainsKey(type))
 			{
-				throw new FSMStateNotFoundException();
+				throw new FsmStateNotFoundException();
 			}
 
 			states[type].transitions.Add(transition);
@@ -61,43 +68,50 @@ namespace Slantar.Architecture
 			return this;
 		}
 
-		public bool ForceState<TState>() where TState : IFSMState
+		public void Start()
 		{
-			var type = typeof(TState);
-			if (states.TryGetValue(type, out var instance))
+			if (Started) 
+				throw new FsmStartedException("The FSM was started, this method was executed previously");
+			
+			var currentType = current.GetType();
+			if (currentType != typeof(EmptyFsmState))
 			{
-				Current = instance.state;
-				return true;
+				Current = FindInitialState();
+				Started = true;
+			}
+			else
+			{
+				current.Update();
+			}
+		}
+
+		private IFsmState FindInitialState()
+		{
+			var found = FindNode(out var node);
+			if (!found)
+			{
+				throw new InitialStateNotSetException("Initial state not set, use AddState with setCurrent flag set to true");
 			}
 
-			return false;
+			return node.state;
+		}
 
+		private bool FindNode(out FsmNode node)
+		{
+			node = states.Values.FirstOrDefault(state => state.initial);
+			return node != null;
 		}
 
 		public void Update()
 		{
-			UpdateCurrent();
-			if (HasValidTransition(out IFSMState nextState))
+			Current.Update();
+			if (HasValidTransition(out IFsmState nextState))
 			{
 				Current = nextState;
 			}
 		}
 
-		private void UpdateCurrent()
-		{
-			try
-			{
-				Current.Update();
-			}
-			catch (NullReferenceException e)
-			{
-				throw new FSMCurrentStateNullException();
-			}
-		}
-
-		private void SetCurrentState(IFSMState initialState) => Current = initialState;
-
-		private bool HasValidTransition(out IFSMState nextState)
+		private bool HasValidTransition(out IFsmState nextState)
 		{
 			foreach (var transition in states[currentType].transitions)
 			{

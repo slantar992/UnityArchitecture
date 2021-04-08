@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Slantar.Architecture
 {
-	public interface IFSMState
+	public interface IFsmState
 	{
 		void Enter();
 		void Update();

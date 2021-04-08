@@ -1,3 +1,8 @@
+# Version 0.3.2
+## Tweaks
+* FSM
+  * Default constructor replaced by one without parameters.
+  * Mandatory Start() method added
 # Version 0.3.1
 ## Tweaks
 * FSM

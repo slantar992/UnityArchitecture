@@ -1,9 +1,9 @@
 
 namespace Slantar.Architecture
 {
-	public interface IFSMTransition
+	public interface IFsmTransition
 	{
-		IFSMState ToState { get; }
+		IFsmState ToState { get; }
 		bool Valid { get; }
 	}
 }

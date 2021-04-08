@@ -19,33 +19,74 @@ namespace Slantar.Architecture.Tests
 		[Test]
 		public void InitalStateInitialized()
 		{
+			fsm.Start();
 			Assert.True(flag.value);
 		}
 
 		[Test]
 		public void TransitionAtoB()
 		{
+			fsm.Start();
 			fsm.Update();
 			fsm.Update();
 			Assert.False(flag.value);
 		}
-		
+
 		[Test]
-		public void ForceTransitionToB()
+		public void TestNotStarted()
 		{
-			var success = fsm.ForceState<StateB>();
-			fsm.Update();
-			Assert.False(flag.value);
+			Assert.False(fsm.Started);
 		}
 		
 		[Test]
-		public void IsForcedTransitionSuccessful()
+		public void TestStarted()
 		{
-			Assert.True(fsm.ForceState<StateB>());
+			fsm.Start();
+			Assert.True(fsm.Started);
+		}
+
+		[Test]
+		public void TestNotStartedException()
+		{
+			Assert.Throws(typeof(FsmNotStartedException), fsm.Update);
 		}
 		
 		[Test]
-		public void IsForcedTransitionFail() => Assert.False(fsm.ForceState<StateC>());
+		public void TestEmptyFsmException()
+		{
+			var example = new FiniteStateMachine();
+			Assert.Throws(typeof(EmptyFsmException), example.Update);
+		}
+		
+		[Test]
+		public void TestFsmStartedException()
+		{
+			fsm.Start();
+			Assert.Throws(typeof(FsmStartedException), fsm.Start);
+		}
+		
+		[Test]
+		public void TestFsmStateAlreadyAddedException()
+		{
+			var state = new StateA(flag);
+			Assert.Throws(typeof(FsmStateAlreadyAddedException), () => ((FiniteStateMachine)fsm).AddState(state));
+		}
+		
+		[Test]
+		public void TestFsmStateNotFoundException()
+		{
+			var state = new StateA(flag);
+			var transition = new AtoB(state);
+			Assert.Throws(typeof(FsmStateNotFoundException), () => ((FiniteStateMachine)fsm).AddTransition<StateC>(transition));
+		}
+		
+		[Test]
+		public void TestInitialStateNotSetException()
+		{
+			var test = new FiniteStateMachine()
+				.AddState(new StateA(flag));
+			Assert.Throws(typeof(InitialStateNotSetException), test.Start);
+		}
 
 		private IFiniteStateMachine AssembleFSM()
 		{
@@ -53,9 +94,10 @@ namespace Slantar.Architecture.Tests
 			var stateB = new StateB(flag);
 			var AtoB = new AtoB(stateB);
 			var finiteStateMachine =
-				new FiniteStateMachine(stateA)
-				.AddState(stateB)
-				.AddTransition<StateA>(AtoB);
+				new FiniteStateMachine()
+					.AddState(stateA, true)
+					.AddState(stateB)
+					.AddTransition<StateA>(AtoB);
 			return finiteStateMachine;
 		}
 	}
